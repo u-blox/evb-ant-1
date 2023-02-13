@@ -1,0 +1,60 @@
+body{
+    text-align: center;
+    background-color: white;
+    font-family: Helvetica, sans-serif;
+}
+
+#configurationArea {
+	margin: auto;
+	width: 400px;
+	padding: 30px;
+	border: 1px solid black;
+	border-radius: 10px;
+	text-align: left;
+}
+
+#configurationArea h3{
+	text-align: center;
+}
+
+.NameColumn {
+	width: 150px;
+	float: left;
+	text-align: right;
+}
+
+.ValueColumn {
+	margin-left: 20px;
+	display: inline-block;
+}
+
+#buttonsDiv {
+	text-align: center;
+	padding-top: 20px;
+}
+
+#buttonsDiv button {
+	margin: 0 10px 0 10px;
+}
+
+#uptimeInfo{
+	margin: 20px;
+}
+
+.rtc_data{
+	display: inline-block;
+	margin: 0 10px 0 10px;
+}
+
+#togglePassw{
+	margin-left: -25px; 
+	font-size: 12px; 
+	cursor: pointer;
+}
+
+#firmwareVersionLabel{
+	float: right;
+	font-size: 10px;
+	margin-top: 12px;
+	margin-right: -14px;
+}

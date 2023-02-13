@@ -1,0 +1,102 @@
+<html>
+<head>
+    <meta charset="ASCII">
+    <title>EVB-ANT-1</title>
+    <link rel="icon" type="image" href="/favicon-16x16.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+	<script src="evbConf.js"></script> 
+</head>
+<body>
+
+
+<h1>EVB-ANT-1</h1>
+<h2>Configuration</h2>
+
+
+
+<div id="configurationArea">
+	
+	<h3> WiFi Setup</h3>
+	<label class="NameColumn" for="wifiEnabled">Enabled:</label>
+	<input class="ValueColumn" type="checkbox" id="wifiEnabled" name="wifiEnabled"><br><br>
+	<label class="NameColumn" for="ssid">SSID:</label>
+	<input class="ValueColumn" type="text" id="ssid" name="ssid"><br><br>
+	<label class="NameColumn" for="passw">Password:</label>
+	<input class="ValueColumn" type="password" id="passw" name="passw">
+	<i class="far fa-eye" id="togglePassw" onclick="toggleShowPassword()"></i><br><br>
+	<label class="NameColumn" for="wifiip">IP:</label>
+	<input class="ValueColumn" type="text" id="wifiip" name="wifiip"><br><br>
+	<label class="NameColumn" for="wifimask">Subnet mask:</label>
+	<input class="ValueColumn" type="text" id="wifimask" name="wifimask"><br><br>
+	<label class="NameColumn" for="wifigw">Default Gateway:</label>
+	<input class="ValueColumn" type="text" id="wifigw" name="wifigw"><br><br>
+	<label class="NameColumn" for="wifidns1">DNS Server 1:</label>
+	<input class="ValueColumn" type="text" id="wifidns1" name="wifidns1"><br><br>
+	<label class="NameColumn" for="wifidns2">DNS Server 2:</label>
+	<input class="ValueColumn" type="text" id="wifidns2" name="wifidns2"><br><br>
+	<label class="NameColumn" for="wifiuseDHCP">Use DHCP:</label>
+	<input class="ValueColumn" type="checkbox" id="wifiuseDHCP" name="wifiuseDHCP" onclick="checkDHCPToggles()"><br><br>
+	<label class="NameColumn" for="wifirssi">Signal RSSI:</label>
+	<label class="ValueColumn" id="wifirssi"> - </label><br><br>
+	<hr>
+	<h3> Ethernet Setup</h3>
+	<label class="NameColumn" for="enetEnabled">Enabled:</label>
+	<input class="ValueColumn" type="checkbox" id="enetEnabled" name="enetEnabled"><br><br>
+	<label class="NameColumn" for="enetip">IP:</label>
+	<input class="ValueColumn" type="text" id="enetip" name="enetip"><br><br>
+	<label class="NameColumn" for="enetmask">Subnet mask:</label>
+	<input class="ValueColumn" type="text" id="enetmask" name="enetmask"><br><br>
+	<label class="NameColumn" for="enetgw">Default Gateway:</label>
+	<input class="ValueColumn" type="text" id="enetgw" name="enetgw"><br><br>
+	<label class="NameColumn" for="enetdns1">DNS Server 1:</label>
+	<input class="ValueColumn" type="text" id="enetdns1" name="enetdns1"><br><br>
+	<label class="NameColumn" for="enetdns2">DNS Server 2:</label>
+	<input class="ValueColumn" type="text" id="enetdns2" name="enetdns2"><br><br>
+	<label class="NameColumn" for="enetuseDHCP">Use DHCP:</label>
+	<input class="ValueColumn" type="checkbox" id="enetuseDHCP" name="enetuseDHCP" onclick="checkDHCPToggles()"><br><br>
+	<hr>
+	<h3> Position Engine Setup</h3>
+	<label class="NameColumn" for="posengip">IP / Hostname:</label>
+	<input class="ValueColumn" type="text" id="posengip" name="posengip"><br><br>
+	<label class="NameColumn" for="posengport">Port:</label>
+	<input class="ValueColumn" type="text" id="posengport" name="posengport"><br><br>
+	<hr>
+	<h3> Anchor Point Setup</h3>
+	<label class="NameColumn" for="activeNINA">Active NINA module:</label>
+	<select class="ValueColumn" name="activeNINA" id="activeNINA">
+		<option value="antb10">ANT-B10</option>
+		<option value="onboard">Onboard NINA module</option>
+	</select><br><br>
+	<label class="NameColumn">NINA Buttons:</label>
+	<div class="ValueColumn">
+		<button class="NinaButtons" onclick="doNinaReset()">Reset</button>
+		<button class="NinaButtons" onclick="doNinaSw1()">Switch 1</button>
+		<button class="NinaButtons" onclick="doNinaSw2()">Switch 2</button>
+	</div><br><br>
+
+	<label class="NameColumn">Send AT Command:</label>
+	<div class="ValueColumn">
+		<input type="text" id="atcommand" name="atcommand">
+		<button id="SendATButton" onclick="doAtSend()">Send</button>
+	</div>
+	<br><br>
+	<hr>
+
+	<div id="buttonsDiv">
+		<button id="submitButton" onclick="doSubmitConf()">Submit</button>
+		<button id="readButton" onclick="doReadConf()">Read</button>
+	</div>
+	
+	<label id="firmwareVersionLabel">F/W version: </label>
+
+</div>
+
+<div id="UptimeInfo">
+	<label>Uptime:</label>
+	<div id="time" class="rtc_data">00:00:00</div>
+	<button id="rebootButton" onclick="doReboot()">Reboot</button> 
+</div>
+
+
+</body></html>
