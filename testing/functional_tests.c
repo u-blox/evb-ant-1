@@ -25,6 +25,22 @@
 #include <app/bip_nina_uart_thread.h>
 #include <app/bip_otp_fuses.h>
 #include <app/bip_wifi_setup.h>
+#include <app/bip_ethernet_interface.h>
+#include "fsl_phyksz8041.h"
+#include "fsl_wdog.h"
+
+/* Pin configuration structs */
+gpio_pin_config_t InputConfig = {
+	.direction = kGPIO_DigitalInput,
+	.outputLogic = 0U,
+	.interruptMode = kGPIO_NoIntmode
+};
+
+gpio_pin_config_t OutputConfig = {
+	.direction = kGPIO_DigitalOutput,
+	.outputLogic = 0U,
+	.interruptMode = kGPIO_NoIntmode
+};
 
 static UART_HANDLE_DEFINE(s_controllerHciUartHandle);
 
@@ -121,18 +137,6 @@ void ant_b10_signals_test(const char *payload, char *outputBuffer, uint8_t *outp
     IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_08_GPIO1_IO24, 0x10B0U);
     IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_10_GPIO1_IO26, 0x10B0U);
     IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_11_GPIO1_IO27, 0x10B0U);
-
-    gpio_pin_config_t InputConfig = {
-        .direction = kGPIO_DigitalInput,
-        .outputLogic = 0U,
-        .interruptMode = kGPIO_NoIntmode
-    };
-
-    gpio_pin_config_t OutputConfig = {
-        .direction = kGPIO_DigitalOutput,
-        .outputLogic = 0U,
-        .interruptMode = kGPIO_NoIntmode
-    };
 
     // Configure output GPIOs
     GPIO_PinInit(TEST_TP21_GPIO3_GPIO, TEST_TP21_GPIO3_PIN, &OutputConfig);
@@ -417,4 +421,110 @@ void sw1_button_test(const char *payload, char *outputBuffer, uint8_t *outputLen
 	} else {
 		RETURN_FAIL(outputBuffer, outputLength);
 	}
+}
+
+void ethernet_diagnostics_test(const char *payload, char *outputBuffer, uint8_t *outputLength){
+	phy_handle_t * phy_handle = get_phy_handle();
+
+	phy_speed_t speed;
+	phy_duplex_t duplex;
+	bool link_status;
+	uint32_t status_register;
+	uint32_t basic_control_register;
+	uint32_t phy1_control_register;
+	uint32_t phy2_control_register;
+	int num_of_rx_errors;
+
+
+	PHY_KSZ8041_GetLinkSpeedDuplex(phy_handle, &speed, &duplex);
+	PHY_KSZ8041_GetLinkStatus(phy_handle, &link_status);
+	PHY_KSZ8041_GetBasicControlRegister(phy_handle, &basic_control_register);
+	PHY_KSZ8041_GetPHYControl1Register(phy_handle, &phy1_control_register);
+	PHY_KSZ8041_GetPHYControl2Register(phy_handle, &phy2_control_register);
+	PHY_KSZ8041_GetRxErrorCounter(phy_handle, &num_of_rx_errors);
+	PHY_KSZ8041_GetStatusRegister(phy_handle, &status_register);
+
+	sprintf(outputBuffer, "Link:%s, Speed:%dMB, Duplex:%s, Status:0x%X, BasicCTRL:0x%X, PHY1Ctrl:0x%X, PHY2Ctrl:0x%X, RxErrors:%d\r\n",
+			(link_status)? "UP" : "DOWN", (speed) ? 100 : 10 , (duplex) ? "FULL" : "HALF", status_register, basic_control_register, phy1_control_register, phy2_control_register, num_of_rx_errors);
+	*outputLength = strlen(outputBuffer);
+}
+
+void toggle_wdog_pin_test(const char *payload, char *outputBuffer, uint8_t *outputLength){
+	WDOG_TriggerSoftwareSignal(WDOG1);
+	RETURN_OK(outputBuffer, outputLength);
+}
+
+GPIO_Type * num_to_gpio(uint32_t num){
+	switch(num){
+		case 1: return GPIO1;
+		case 2: return GPIO2;
+		case 3: return GPIO3;
+		case 4: return GPIO4;
+		case 5: return GPIO5;
+		case 6: return GPIO6;
+		case 7: return GPIO7;
+		case 8: return GPIO8;
+		case 9: return GPIO9;
+		case 10: return GPIO10;
+		default: return GPIO1;
+	}
+}
+
+uint32_t characters_to_num(const char ** c){
+	uint32_t ret = 0;
+	while ((**c >= '0') && (**c <= '9')){
+		ret = 10*ret + **c - '0';
+		(*c)++;
+	}
+	return ret;
+}
+
+/*
+ * Expects payload in the form:
+ * '<gpio number> <pin number> <state>'
+ * eg: AT+SETGPIO=4 10 1
+ * sets pin 10 of GPIO4 to state 1
+ */
+void general_gpio_set(const char *payload, char *outputBuffer, uint8_t *outputLength){
+	GPIO_Type * gpio;
+	uint32_t pin = 0;
+	uint32_t state;
+
+	gpio = num_to_gpio(characters_to_num(&payload));
+
+	payload++;
+
+	pin = characters_to_num(&payload);
+
+	payload++;
+
+	state = characters_to_num(&payload);
+
+	GPIO_PinInit(gpio, pin, &OutputConfig);
+	GPIO_PinWrite(gpio, pin, state);
+	RETURN_OK(outputBuffer, outputLength);
+}
+
+/*
+ * Expects payload in the form:
+ * '<gpio number> <pin number>'
+ * eg: AT+GETGPIO=4 10
+ * returns state of pin 10 of GPIO4
+ */
+void general_gpio_get(const char *payload, char *outputBuffer, uint8_t *outputLength){
+	GPIO_Type * gpio;
+	uint32_t pin = 0;
+	uint32_t state;
+
+	gpio = num_to_gpio(characters_to_num(&payload));
+
+	payload++;
+
+	pin = characters_to_num(&payload);
+
+	GPIO_PinInit(gpio, pin, &InputConfig);
+	state = GPIO_PinRead(gpio, pin);
+
+	sprintf(outputBuffer, "%d\r\n", state);
+	*outputLength = strlen(outputBuffer);
 }

@@ -18,7 +18,7 @@
 #include <string.h>
 #include <stdio.h>
 
-static char response[50];
+static char response[150];
 
 static const supported_command_t commands_registry[] = {
     {"AT+BASICTEST", dummy_test},
@@ -33,7 +33,11 @@ static const supported_command_t commands_registry[] = {
     {"AT+MAYAUARTTEST", maya_uart_test},
     {"AT+UNIQUEID", unique_id_test},
     {"AT+MAYABUILTINMAC", maya_mac_addr_test},
-	{"AT+MCUSWITCHTEST", sw1_button_test}
+	{"AT+MCUSWITCHTEST", sw1_button_test},
+	{"AT+ENETDIAG", ethernet_diagnostics_test},
+	{"AT+REBOOT", toggle_wdog_pin_test},
+	{"AT+SETGPIO=", general_gpio_set},
+	{"AT+GETGPIO=", general_gpio_get}
 };
 
 char *parse_command(char *in_str, unsigned int in_length, uint8_t *out_length)

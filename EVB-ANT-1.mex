@@ -556,14 +556,18 @@
                         <pin_feature name="identifier" value="NINA_CLK"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="LPSPI2" signal="SDI" pin_num="G4" pin_signal="GPIO_EMC_03">
+                  <pin peripheral="GPIO4" signal="gpio_io, 03" pin_num="G4" pin_signal="GPIO_EMC_03">
                      <pin_features>
                         <pin_feature name="identifier" value="NINA_MISO"/>
+                        <pin_feature name="direction" value="INPUT"/>
+                        <pin_feature name="pull_keeper_enable" value="Enable"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="LPSPI2" signal="SDO" pin_num="F4" pin_signal="GPIO_EMC_02">
+                  <pin peripheral="GPIO4" signal="gpio_io, 02" pin_num="F4" pin_signal="GPIO_EMC_02">
                      <pin_features>
                         <pin_feature name="identifier" value="NINA_MOSI"/>
+                        <pin_feature name="direction" value="INPUT"/>
+                        <pin_feature name="pull_keeper_enable" value="Enable"/>
                      </pin_features>
                   </pin>
                   <pin peripheral="GPIO4" signal="gpio_io, 22" pin_num="F1" pin_signal="GPIO_EMC_22">

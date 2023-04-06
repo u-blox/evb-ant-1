@@ -171,8 +171,8 @@ BOARD_InitPins:
   - {pin_num: A6, peripheral: LPUART3, signal: TX, pin_signal: GPIO_EMC_13, identifier: NINA_TX}
   - {pin_num: F3, peripheral: LPSPI2, signal: PCS0, pin_signal: GPIO_EMC_01, identifier: NINA_CS}
   - {pin_num: E3, peripheral: LPSPI2, signal: SCK, pin_signal: GPIO_EMC_00, identifier: NINA_CLK}
-  - {pin_num: G4, peripheral: LPSPI2, signal: SDI, pin_signal: GPIO_EMC_03, identifier: NINA_MISO}
-  - {pin_num: F4, peripheral: LPSPI2, signal: SDO, pin_signal: GPIO_EMC_02, identifier: NINA_MOSI}
+  - {pin_num: G4, peripheral: GPIO4, signal: 'gpio_io, 03', pin_signal: GPIO_EMC_03, identifier: NINA_MISO, direction: INPUT, pull_keeper_enable: Enable}
+  - {pin_num: F4, peripheral: GPIO4, signal: 'gpio_io, 02', pin_signal: GPIO_EMC_02, identifier: NINA_MOSI, direction: INPUT, pull_keeper_enable: Enable}
   - {pin_num: F1, peripheral: GPIO4, signal: 'gpio_io, 22', pin_signal: GPIO_EMC_22, identifier: NINA_RST, direction: OUTPUT, gpio_init_state: 'true', pull_up_down_config: Pull_Up_47K_Ohm,
     open_drain: Enable}
   - {pin_num: D3, peripheral: GPIO4, signal: 'gpio_io, 24', pin_signal: GPIO_EMC_24, identifier: NINA_SW1, direction: OUTPUT, gpio_init_state: 'true', pull_up_down_config: Pull_Up_47K_Ohm,
@@ -309,6 +309,24 @@ void BOARD_InitPins(void) {
   };
   /* Initialize GPIO functionality on GPIO_EMC_36 (pin C3) */
   GPIO_PinInit(GPIO3, 22U, &ANT_BXX_UART_MUX_config);
+
+  /* GPIO configuration of NINA_MOSI on GPIO_EMC_02 (pin F4) */
+  gpio_pin_config_t NINA_MOSI_config = {
+      .direction = kGPIO_DigitalInput,
+      .outputLogic = 0U,
+      .interruptMode = kGPIO_NoIntmode
+  };
+  /* Initialize GPIO functionality on GPIO_EMC_02 (pin F4) */
+  GPIO_PinInit(GPIO4, 2U, &NINA_MOSI_config);
+
+  /* GPIO configuration of NINA_MISO on GPIO_EMC_03 (pin G4) */
+  gpio_pin_config_t NINA_MISO_config = {
+      .direction = kGPIO_DigitalInput,
+      .outputLogic = 0U,
+      .interruptMode = kGPIO_NoIntmode
+  };
+  /* Initialize GPIO functionality on GPIO_EMC_03 (pin G4) */
+  GPIO_PinInit(GPIO4, 3U, &NINA_MISO_config);
 
   /* GPIO configuration of MAYA_BT_W_H on GPIO_EMC_04 (pin F2) */
   gpio_pin_config_t MAYA_BT_W_H_config = {
@@ -499,8 +517,8 @@ void BOARD_InitPins(void) {
   IOMUXC_SetPinMux(IOMUXC_GPIO_B1_15_GPIO2_IO31, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_00_LPSPI2_SCK, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_01_LPSPI2_PCS0, 0U); 
-  IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_02_LPSPI2_SDO, 0U); 
-  IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_03_LPSPI2_SDI, 0U); 
+  IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_02_GPIO4_IO02, 0U); 
+  IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_03_GPIO4_IO03, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_04_GPIO4_IO04, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_09_GPIO4_IO09, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_13_LPUART3_TX, 0U); 
@@ -575,6 +593,8 @@ void BOARD_InitPins(void) {
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_11_ENET_RX_ER, 0xB0E9U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_12_GPIO2_IO28, 0x58B0U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_14_GPIO2_IO30, 0x70B0U); 
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_02_GPIO4_IO02, 0x10B0U); 
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_03_GPIO4_IO03, 0x10B0U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_17_GPIO4_IO17, 0x50B0U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_19_GPIO4_IO19, 0x50B0U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_20_GPIO4_IO20, 0x50B0U); 

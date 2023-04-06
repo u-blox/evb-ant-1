@@ -90,4 +90,12 @@ void maya_mac_addr_test(const char *payload, char *outputBuffer, uint8_t *output
 
 void sw1_button_test(const char *payload, char *outputBuffer, uint8_t *outputLength);
 
+void ethernet_diagnostics_test(const char *payload, char *outputBuffer, uint8_t *outputLength);
+
+void toggle_wdog_pin_test(const char *payload, char *outputBuffer, uint8_t *outputLength);
+
+void general_gpio_set(const char *payload, char *outputBuffer, uint8_t *outputLength);
+
+void general_gpio_get(const char *payload, char *outputBuffer, uint8_t *outputLength);
+
 #endif

@@ -34,7 +34,11 @@
 #define PHY_READID_TIMEOUT_COUNT 1000U
 
 
+/* Masks for basic status register PHY_BASICSTATUS_REG*/
+#define PHY_BSTATUS_REMOTE_FAULT_MASK (1 << 4) /*!< Indication for remote fault */
 
+/*RX error counter register*/
+#define PHY_RX_ERROR_COUNTER_REG (0x15U)
 
 
 #define PHY_INT_CONTROL_STATUS_REG						0x1BU
@@ -56,6 +60,8 @@
 #define PHY_INT_SOURCE_LINK_DOWN_OCCURED_MASK			(1 << 2)
 #define PHY_INT_SOURCE_REMOTE_FAULT_OCCURED_MASK		(1 << 1)
 #define PHY_INT_SOURCE_LINK_UP_OCCURED_MASK				(1 << 0)
+
+
 
 #define PHY_INT_SOURCE_CLEAR_ALL_OCCURRED_MASK			0x00FFU
 
@@ -387,10 +393,34 @@ status_t PHY_KSZ8041_EnableLoopback(phy_handle_t *handle, phy_loop_t mode, phy_s
     return result;
 }
 
-
 status_t PHY_KSZ8041_SetLinkUpInterrupt(phy_handle_t *handle){
 	return MDIO_Write(handle->mdioHandle, handle->phyAddr, PHY_INT_CONTROL_STATUS_REG, PHY_INT_SOURCE_LINK_UP_ENABLE_MASK | PHY_INT_SOURCE_CLEAR_ALL_OCCURRED_MASK);
 }
 
+status_t PHY_KSZ8041_GetRxErrorCounter(phy_handle_t *handle, int *count){
+	return MDIO_Read(handle->mdioHandle, handle->phyAddr, PHY_RX_ERROR_COUNTER_REG, (uint32_t*) count);
+}
 
+status_t PHY_KSZ8041_GetRemoteFault(phy_handle_t *handle, bool *fault){
+	uint32_t status;
+	status_t result;
+	result =  MDIO_Read(handle->mdioHandle, handle->phyAddr, PHY_BASICSTATUS_REG, &status);
+	*fault = (status & PHY_BSTATUS_REMOTE_FAULT_MASK);
+	return result;
+}
 
+status_t PHY_KSZ8041_GetStatusRegister(phy_handle_t *handle, uint32_t *status){
+	return  MDIO_Read(handle->mdioHandle, handle->phyAddr, PHY_BASICSTATUS_REG, status);
+}
+
+status_t PHY_KSZ8041_GetBasicControlRegister(phy_handle_t *handle, uint32_t *status){
+	return  MDIO_Read(handle->mdioHandle, handle->phyAddr, PHY_BASICCONTROL_REG, status);
+}
+
+status_t PHY_KSZ8041_GetPHYControl1Register(phy_handle_t *handle, uint32_t *status){
+	return  MDIO_Read(handle->mdioHandle, handle->phyAddr, PHY_CONTROL1_REG, status);
+}
+
+status_t PHY_KSZ8041_GetPHYControl2Register(phy_handle_t *handle, uint32_t *status){
+	return  MDIO_Read(handle->mdioHandle, handle->phyAddr, PHY_CONTROL2_REG, status);
+}

@@ -42,6 +42,9 @@
 #define MAX_SOCKETS_UDP           6
 #define TCP_SND_BUF_COUNT         2
 
+//Suppress lwip asserts from blocking execution
+#define LWIP_NOASSERT
+
 /**
  * Loopback demo related options.
  */

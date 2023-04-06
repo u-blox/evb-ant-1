@@ -18,6 +18,7 @@
 #define BIP_ETHERNET_INTERFACE_H_
 
 #include <app/bip_tasks.h>
+#include "fsl_phy.h"
 
 #define ETHERNET_DEFAULT_NETIF  1
 
@@ -57,5 +58,7 @@ int ethernet_init(void);
  * It is useful to display the actual information to the user
  */
 void update_configuration_wth_enet_DHCP_data(void);
+
+phy_handle_t* get_phy_handle();
 
 #endif /* ETHERNET_INTERFACE_H_ */

@@ -18,7 +18,6 @@
 #define APP_BIP_VERSION_H_
 
 
-#define FIRMWARE_VERSION_STR "0.1"
-
+#define FIRMWARE_VERSION_STR "1.0"
 
 #endif /* APP_BIP_VERSION_H_ */

@@ -16,8 +16,7 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-/*! @brief The board name */
-#define BOARD_NAME "MIMXRT1060-EVK"
+
 
 /* The UART to use for debug messages. */
 #define BOARD_DEBUG_UART_TYPE     kSerialPort_Uart
@@ -76,7 +75,8 @@
 #define BOARD_FLASH_SIZE (0x800000U)
 
 /*! @brief The ENET PHY address. */
-#define BOARD_ENET0_PHY_ADDRESS (0x01U) // Phy address of enet port 0. TODO Change this to 2 for compatibility with the EVK
+#define BOARD_ENET0_PHY_ADDRESS (0x02U)
+#define ALT_BOARD_ENET0_PHY_ADDRESS (0x01U)
 
 /* USB PHY configuration */
 #define BOARD_USB_PHY_D_CAL     (0x0CU)

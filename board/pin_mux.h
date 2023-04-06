@@ -40,7 +40,7 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_IOMUXC_GPR_GPR26_GPIO_MUX1_GPIO_SEL_MASK 0x0F000601U /*!< GPIO1 and GPIO6 share same IO MUX function, GPIO_MUX1 selects one GPIO function: affected bits mask */
 #define BOARD_INITPINS_IOMUXC_GPR_GPR27_GPIO_MUX2_GPIO_SEL_MASK 0xD0070000U /*!< GPIO2 and GPIO7 share same IO MUX function, GPIO_MUX2 selects one GPIO function: affected bits mask */
 #define BOARD_INITPINS_IOMUXC_GPR_GPR28_GPIO_MUX3_GPIO_SEL_MASK 0x480001U /*!< GPIO3 and GPIO8 share same IO MUX function, GPIO_MUX3 selects one GPIO function: affected bits mask */
-#define BOARD_INITPINS_IOMUXC_GPR_GPR29_GPIO_MUX4_GPIO_SEL_MASK 0x997E0210U /*!< GPIO4 and GPIO9 share same IO MUX function, GPIO_MUX4 selects one GPIO function: affected bits mask */
+#define BOARD_INITPINS_IOMUXC_GPR_GPR29_GPIO_MUX4_GPIO_SEL_MASK 0x997E021CU /*!< GPIO4 and GPIO9 share same IO MUX function, GPIO_MUX4 selects one GPIO function: affected bits mask */
 
 /* GPIO_AD_B0_13 (coord L14), UART1_RXD */
 /* Routed pin properties */
@@ -442,13 +442,31 @@ void BOARD_InitBootPins(void);
 
 /* GPIO_EMC_03 (coord G4), NINA_MISO */
 /* Routed pin properties */
-#define BOARD_INITPINS_NINA_MISO_PERIPHERAL                               LPSPI2   /*!< Peripheral name */
-#define BOARD_INITPINS_NINA_MISO_SIGNAL                                      SDI   /*!< Signal name */
+#define BOARD_INITPINS_NINA_MISO_PERIPHERAL                                GPIO4   /*!< Peripheral name */
+#define BOARD_INITPINS_NINA_MISO_SIGNAL                                  gpio_io   /*!< Signal name */
+#define BOARD_INITPINS_NINA_MISO_CHANNEL                                      3U   /*!< Signal channel */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_NINA_MISO_GPIO                                      GPIO4   /*!< GPIO peripheral base pointer */
+#define BOARD_INITPINS_NINA_MISO_GPIO_PIN                                     3U   /*!< GPIO pin number */
+#define BOARD_INITPINS_NINA_MISO_GPIO_PIN_MASK                        (1U << 3U)   /*!< GPIO pin mask */
+#define BOARD_INITPINS_NINA_MISO_PORT                                      GPIO4   /*!< PORT peripheral base pointer */
+#define BOARD_INITPINS_NINA_MISO_PIN                                          3U   /*!< PORT pin number */
+#define BOARD_INITPINS_NINA_MISO_PIN_MASK                             (1U << 3U)   /*!< PORT pin mask */
 
 /* GPIO_EMC_02 (coord F4), NINA_MOSI */
 /* Routed pin properties */
-#define BOARD_INITPINS_NINA_MOSI_PERIPHERAL                               LPSPI2   /*!< Peripheral name */
-#define BOARD_INITPINS_NINA_MOSI_SIGNAL                                      SDO   /*!< Signal name */
+#define BOARD_INITPINS_NINA_MOSI_PERIPHERAL                                GPIO4   /*!< Peripheral name */
+#define BOARD_INITPINS_NINA_MOSI_SIGNAL                                  gpio_io   /*!< Signal name */
+#define BOARD_INITPINS_NINA_MOSI_CHANNEL                                      2U   /*!< Signal channel */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_NINA_MOSI_GPIO                                      GPIO4   /*!< GPIO peripheral base pointer */
+#define BOARD_INITPINS_NINA_MOSI_GPIO_PIN                                     2U   /*!< GPIO pin number */
+#define BOARD_INITPINS_NINA_MOSI_GPIO_PIN_MASK                        (1U << 2U)   /*!< GPIO pin mask */
+#define BOARD_INITPINS_NINA_MOSI_PORT                                      GPIO4   /*!< PORT peripheral base pointer */
+#define BOARD_INITPINS_NINA_MOSI_PIN                                          2U   /*!< PORT pin number */
+#define BOARD_INITPINS_NINA_MOSI_PIN_MASK                             (1U << 2U)   /*!< PORT pin mask */
 
 /* GPIO_EMC_22 (coord F1), NINA_RST */
 /* Routed pin properties */

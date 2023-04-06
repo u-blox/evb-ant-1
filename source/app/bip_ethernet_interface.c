@@ -31,7 +31,6 @@
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "board.h"
-#include "fsl_phy.h"
 
 #include "fsl_phyksz8041.h"
 #include "fsl_enet_mdio.h"
@@ -77,6 +76,12 @@ static void http_srv_txt(struct mdns_service *service, void *txt_userdata)
     mdns_resp_add_service_txtitem(service, "path=/", 6);
 }
 
+static bool is_wrong_phy_handle(){
+	uint32_t st, ret;
+	ret = PHY_KSZ8041_GetStatusRegister(&phyHandle, &st);
+	return((st == 0xFFFF) || (ret));
+}
+
 static void ethernet_netif_init(void *arg)
 {
 	LWIP_UNUSED_ARG(arg);
@@ -89,7 +94,6 @@ static void ethernet_netif_init(void *arg)
 
     memcpy(enet_config.macAddress, get_mac_addr_array_from_OTP(), NETIF_MAX_HWADDR_LEN);
 
-    uint8_t has_gateway = 1;
 
     mdioHandle.resource.csrClock_Hz = ENET_CLOCK_FREQ;
 
@@ -97,44 +101,40 @@ static void ethernet_netif_init(void *arg)
         IP4_ADDR(&netif_ipaddr, 0, 0, 0, 0);
         IP4_ADDR(&netif_netmask, 0, 0, 0, 0);
         IP4_ADDR(&netif_gw, 0, 0, 0, 0);
-
-        net_ipv4stack_init();
-
-        netifapi_netif_add(&ethernet_netif, &netif_ipaddr, &netif_netmask, (has_gateway) ? &netif_gw : NULL, &enet_config,
-                           ENET_NETIF_INIT_FN, tcpip_input);
-
-#if ETHERNET_DEFAULT_NETIF == 1
-        netifapi_netif_set_default(&ethernet_netif);
-#endif
-        netifapi_netif_set_up(&ethernet_netif);
-
-        if (dhcp_start(&ethernet_netif) != ERR_OK) {
-            PRINTF("Failed to initialize dhcp for ethernet netif");
-            __BKPT(0);
-        }
-
     } else {
-
-        netif_ipaddr = get_configuration()->enetIp;
-        netif_netmask = get_configuration()->enetMask;
-        netif_gw = get_configuration()->enetGW;
-        dns1 = get_configuration()->enetDns1;
-        dns2 = get_configuration()->enetDns2;
+    	netif_ipaddr = get_configuration()->enetIp;
+		netif_netmask = get_configuration()->enetMask;
+		netif_gw = get_configuration()->enetGW;
+		dns1 = get_configuration()->enetDns1;
+		dns2 = get_configuration()->enetDns2;
+    }
 
         net_ipv4stack_init();
-
-        netifapi_netif_add(&ethernet_netif, &netif_ipaddr, &netif_netmask, (has_gateway) ? &netif_gw : NULL, &enet_config,
+        netifapi_netif_add(&ethernet_netif, &netif_ipaddr, &netif_netmask, &netif_gw, &enet_config,
                            ENET_NETIF_INIT_FN, tcpip_input);
+
+        if (is_wrong_phy_handle()){
+        	PRINTF("Trying different phy address\r\n");
+			phyHandle.phyAddr = ALT_BOARD_ENET0_PHY_ADDRESS;
+			netifapi_netif_remove(&ethernet_netif);
+			netifapi_netif_add(&ethernet_netif, &netif_ipaddr, &netif_netmask, &netif_gw, &enet_config,
+							   ENET_NETIF_INIT_FN, tcpip_input);
+	   }
 
 #if ETHERNET_DEFAULT_NETIF == 1
         netifapi_netif_set_default(&ethernet_netif);
 #endif
         netifapi_netif_set_up(&ethernet_netif);
 
-        dns_setserver(0, &dns1);
-        dns_setserver(1, &dns2);
-
-    }
+        if (get_configuration()->enetUseDHCP){
+			if (dhcp_start(&ethernet_netif) != ERR_OK){
+				PRINTF("Failed to initialize dhcp for ethernet netif");
+				__BKPT(0);
+			}
+        } else {
+        	dns_setserver(0, &dns1);
+        	dns_setserver(1, &dns2);
+        }
 
 #if ENABLE_MDNS_FOR_ETHERNET_NETIF == 1
     LOCK_TCPIP_CORE();
@@ -197,6 +197,10 @@ void update_configuration_wth_enet_DHCP_data(void)
 	get_configuration()->enetGW = ethernet_netif.gw;
 	taskEXIT_CRITICAL();
 
+}
+
+phy_handle_t* get_phy_handle(){
+	return &phyHandle;
 }
 
 #endif

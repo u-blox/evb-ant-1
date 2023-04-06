@@ -155,8 +155,19 @@ status_t PHY_KSZ8041_EnableLoopback(phy_handle_t *handle, phy_loop_t mode, phy_s
 
 
 
-
 status_t PHY_KSZ8041_SetLinkUpInterrupt(phy_handle_t *handle);
+
+status_t PHY_KSZ8041_GetRxErrorCounter(phy_handle_t *handle, int *count);
+
+status_t PHY_KSZ8041_GetRemoteFault(phy_handle_t *handle, bool *fault);
+
+status_t PHY_KSZ8041_GetStatusRegister(phy_handle_t *handle, uint32_t *status);
+
+status_t PHY_KSZ8041_GetBasicControlRegister(phy_handle_t *handle, uint32_t *status);
+
+status_t PHY_KSZ8041_GetPHYControl1Register(phy_handle_t *handle, uint32_t *status);
+
+status_t PHY_KSZ8041_GetPHYControl2Register(phy_handle_t *handle, uint32_t *status);
 
 
 
